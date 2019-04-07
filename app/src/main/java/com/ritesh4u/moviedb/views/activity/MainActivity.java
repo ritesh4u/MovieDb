@@ -1,4 +1,4 @@
-package com.ritesh4u.moviedb;
+package com.ritesh4u.moviedb.views.activity;
 
 import android.app.ProgressDialog;
 import android.net.ConnectivityManager;
@@ -13,10 +13,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.ritesh4u.moviedb.R;
 import com.ritesh4u.moviedb.database.AppDatabase;
 import com.ritesh4u.moviedb.network.ApiClient;
 import com.ritesh4u.moviedb.network.ApiInterface;
 import com.ritesh4u.moviedb.models.MovieListResponse;
+import com.ritesh4u.moviedb.views.fragment.MovieListFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         toolbarTitle = findViewById(R.id.toolbarTitleTextView);
 
         if (isNetworkAvailable()) {
-            callMovieListApi();
+            //  callMovieListApi();
+            launchMovieListFragment(getString(R.string.defaultTitle));
         } else {
             Toast.makeText(this, "No network ofline Data showing", Toast.LENGTH_SHORT).show();
 //            ((TextView) findViewById(R.id.textView)).setText(AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().getMovieList().toString());
@@ -42,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void launchMovieListFragment(@NonNull String title) {
+        setToolbarTitle(title);
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MovieListFragment()).commitAllowingStateLoss();
+    }
+
+    private void launchMovieDetailsFragment(@NonNull String title) {
+        setToolbarTitle(title);
+        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, new MovieListFragment())
+                .addToBackStack(title).commitAllowingStateLoss();
     }
 
     //Return true if network is available
