@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/sort_menu_list" android:checkableBehavior="single">
+    <item android:id="@+id/sort_by_none"
+        app:showAsAction="never"
+        android:enabled="true"
+        android:checked="true"
+        android:title="none"/>
+    <item android:id="@+id/sort_by_date"
+        android:enabled="true"
+        app:showAsAction="never"
+        android:title="By Date "/>
+    <item android:id="@+id/sort_by_rating"
+        app:showAsAction="never"
+        android:enabled="true"
+        android:title="By Rating "/>
+    </group>
+</menu>

@@ -6,8 +6,13 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,23 +33,54 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity {
     String TAG = MainActivity.class.getSimpleName();
     TextView toolbarTitle;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         toolbarTitle = findViewById(R.id.toolbarTitleTextView);
+        //toolbar.inflateMenu(R.menu.sort_menu_list);
 
         if (isNetworkAvailable()) {
             //  callMovieListApi();
             launchMovieListFragment(getString(R.string.defaultTitle));
         } else {
             Toast.makeText(this, "No network ofline Data showing", Toast.LENGTH_SHORT).show();
-//            ((TextView) findViewById(R.id.textView)).setText(AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().getMovieList().toString());
-
 
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showToast("clicked");
+            }
+        });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sort_menu_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setChecked(true);
+        switch (item.getItemId()) {
+            case R.id.sort_by_none:
+                showToast("by none");
+                return true;
+
+            case R.id.sort_by_date:
+                showToast("by date");
+                return true;
+            case R.id.sort_by_rating:
+                showToast("by rating");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void launchMovieListFragment(@NonNull String title) {
