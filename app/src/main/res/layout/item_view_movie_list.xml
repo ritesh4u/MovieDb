@@ -51,7 +51,7 @@
             android:layout_below="@id/movie_name_text_view"
             android:layout_margin="5dp"
             android:layout_toEndOf="@id/movie_image"
-            android:text="Popularity : "
+            android:text="Rating : "
             android:textSize="16sp"
             android:textStyle="bold|italic" />
 
@@ -63,17 +63,6 @@
             android:layout_margin="5dp"
             android:layout_toEndOf="@id/popularity_label"
             android:text="10"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/movie_name_text_view"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@id/popularity_text_view"
-            android:text="%"
             android:textSize="16sp" />
 
         <TextView

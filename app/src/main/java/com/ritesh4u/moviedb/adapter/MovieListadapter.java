@@ -13,10 +13,14 @@ import com.ritesh4u.moviedb.R;
 import com.ritesh4u.moviedb.models.Items;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
 import static com.ritesh4u.moviedb.AppConstants.BASE_IMAGE_URL;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_NONE;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING;
 
 public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.ViewHolder> {
 
@@ -38,10 +42,10 @@ public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Items currentItem=movieList.get(i);
-        Picasso.get().load(BASE_IMAGE_URL+currentItem.getPoster_path()).into(viewHolder.movieImage);
+        Items currentItem = movieList.get(i);
+        Picasso.get().load(BASE_IMAGE_URL + currentItem.getPoster_path()).into(viewHolder.movieImage);
         viewHolder.movieName.setText(currentItem.getTitle());
-        viewHolder.moviePopularity.setText(currentItem.getPopularity());
+        viewHolder.moviePopularity.setText(currentItem.getVote_average());
         viewHolder.releaseDate.setText(currentItem.getRelease_date());
     }
 
@@ -52,14 +56,23 @@ public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.View
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView movieImage;
-        TextView movieName, moviePopularity,releaseDate;
+        TextView movieName, moviePopularity, releaseDate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             movieImage = itemView.findViewById(R.id.movie_image);
             movieName = itemView.findViewById(R.id.movie_name_text_view);
             moviePopularity = itemView.findViewById(R.id.popularity_text_view);
-            releaseDate=itemView.findViewById(R.id.release_date_text_view);
+            releaseDate = itemView.findViewById(R.id.release_date_text_view);
+        }
+    }
+
+    // 1=by id (none) 2= by date 3=rating
+    public void sortList() {
+        if (movieList != null && movieList.size() > 0) {
+
+            Collections.sort(movieList);
+            notifyDataSetChanged();
         }
     }
 }

@@ -3,11 +3,13 @@ package com.ritesh4u.moviedb.views.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -18,7 +20,13 @@ import com.ritesh4u.moviedb.callback.ApiResponseListener;
 import com.ritesh4u.moviedb.models.Items;
 import com.ritesh4u.moviedb.views.activity.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_NONE;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +41,13 @@ public class MovieListFragment extends Fragment implements ApiResponseListener {
 
     RecyclerView movieRecyclerView;
     TextView ntsTextView;
+    MovieListadapter movieListadapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -41,6 +56,7 @@ public class MovieListFragment extends Fragment implements ApiResponseListener {
         rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         ntsTextView = rootView.findViewById(R.id.nts_text_view);
         movieRecyclerView = rootView.findViewById(R.id.movie_lit_recycler_view);
+        movieListadapter = new MovieListadapter(new ArrayList<Items>());
         init();
         return rootView;
     }
@@ -53,11 +69,37 @@ public class MovieListFragment extends Fragment implements ApiResponseListener {
     public void onMovieListFetched(List<Items> movieList) {
         if (movieList.size() == 0) {
             ntsTextView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             ntsTextView.setVisibility(View.GONE);
 
         }
+        movieListadapter = new MovieListadapter(movieList);
         movieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        movieRecyclerView.setAdapter(new MovieListadapter(movieList));
+        movieRecyclerView.setAdapter(movieListadapter);
+        movieListadapter.sortList();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setChecked(true);
+        switch (item.getItemId()) {
+            case R.id.sort_by_none:
+                MainActivity.sortBy = SORT_BY_NONE;
+                ((MainActivity) Objects.requireNonNull(getContext())).showToast("by none");
+                movieListadapter.sortList();
+                return true;
+
+            case R.id.sort_by_date:
+                ((MainActivity) Objects.requireNonNull(getContext())).showToast("by date");
+                MainActivity.sortBy = SORT_BY_DATE;
+                movieListadapter.sortList();
+                return true;
+            case R.id.sort_by_rating:
+                ((MainActivity) Objects.requireNonNull(getContext())).showToast("by rating");
+                MainActivity.sortBy = SORT_BY_RATING;
+                movieListadapter.sortList();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -26,6 +26,10 @@ import com.ritesh4u.moviedb.network.ApiInterface;
 import com.ritesh4u.moviedb.models.MovieListResponse;
 import com.ritesh4u.moviedb.views.fragment.MovieListFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     String TAG = MainActivity.class.getSimpleName();
     TextView toolbarTitle;
     Toolbar toolbar;
+    //1=none 2=by date 3=by rating
+    public static int sortBy = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,30 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isNetworkAvailable()||AppDatabase.getDBInstance(this).getItemsDAO().getMovieList().size()>0) {
+        if (isNetworkAvailable() || AppDatabase.getDBInstance(this).getItemsDAO().getMovieList().size() > 0) {
             getMenuInflater().inflate(R.menu.sort_menu_list, menu);
             return true;
         }
         return false;
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        item.setChecked(true);
-        switch (item.getItemId()) {
-            case R.id.sort_by_none:
-                showToast("by none");
-                return true;
-
-            case R.id.sort_by_date:
-                showToast("by date");
-                return true;
-            case R.id.sort_by_rating:
-                showToast("by rating");
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void launchMovieListFragment(@NonNull String title) {
@@ -153,12 +141,21 @@ public class MainActivity extends AppCompatActivity {
     //for showing Toast
     public void showToast(String message) {
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
     public void setToolbarTitle(String title) {
         if (title != null)
             toolbarTitle.setText(title);
+    }
+
+    public static Date getDateObj(String yyyyMMdd) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return dateFormat.parse(yyyyMMdd);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new Date();
     }
 }

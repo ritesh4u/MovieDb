@@ -4,13 +4,18 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.ritesh4u.moviedb.views.activity.MainActivity;
+
+import java.util.Date;
+
 @Entity(tableName = "items")
-public class Items {
+public class Items implements Comparable<Items> {
     public Items() {
     }
 
     @PrimaryKey()
-    @NonNull private String id="0";
+    @NonNull
+    private int id = 0;
 
     private String overview;
 
@@ -129,11 +134,11 @@ public class Items {
     }
 
     @NonNull
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(@NonNull int id) {
         this.id = id;
     }
 
@@ -157,5 +162,45 @@ public class Items {
     @Override
     public String toString() {
         return "ClassPojo [overview = " + overview + ", original_language = " + original_language + ", original_title = " + original_title + ", video = " + video + ", title = " + title + ", poster_path = " + poster_path + ", backdrop_path = " + backdrop_path + ", media_type = " + media_type + ", release_date = " + release_date + ", vote_average = " + vote_average + ", popularity = " + popularity + ", id = " + id + ", adult = " + adult + ", vote_count = " + vote_count + "]";
+    }
+
+    @Override
+    public int compareTo(Items o) {
+        if (MainActivity.sortBy == 1) {
+            //sorting date according to id
+            if (getId() == o.getId()) {
+                return 0;
+            } else if (getId() < o.getId()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else if (MainActivity.sortBy == 2) {
+            //sorting list according to release date
+            Date thisDate = MainActivity.getDateObj(getRelease_date());
+            Date objDate = MainActivity.getDateObj(o.getRelease_date());
+            if (thisDate.getTime() == objDate.getTime()) {
+                return 0;
+            } else if (thisDate.getTime() < objDate.getTime()) {
+                return 1;
+            } else {
+                return -1;
+            }
+
+        } else if (MainActivity.sortBy == 3) {
+            //Sorting list in descending order of rating
+            float thisAvg = Float.parseFloat(this.getVote_average());
+            float objAvg = Float.parseFloat(o.getVote_average());
+            if (thisAvg == objAvg) {
+                return 0;
+            } else if (thisAvg < objAvg) {
+                return 1;
+            } else {
+                return -1;
+            }
+
+        } else {
+            return 0;
+        }
     }
 }
