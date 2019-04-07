@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ritesh4u.moviedb.R;
+import com.ritesh4u.moviedb.callback.ApiResponseListener;
 import com.ritesh4u.moviedb.database.AppDatabase;
 import com.ritesh4u.moviedb.network.ApiClient;
 import com.ritesh4u.moviedb.network.ApiInterface;
@@ -43,26 +44,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbarTitle = findViewById(R.id.toolbarTitleTextView);
         //toolbar.inflateMenu(R.menu.sort_menu_list);
-
-        if (isNetworkAvailable()) {
-            //  callMovieListApi();
-            launchMovieListFragment(getString(R.string.defaultTitle));
-        } else {
-            Toast.makeText(this, "No network ofline Data showing", Toast.LENGTH_SHORT).show();
-
-        }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToast("clicked");
-            }
-        });
+        launchMovieListFragment(getString(R.string.defaultTitle));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.sort_menu_list, menu);
-        return true;
+        if (isNetworkAvailable()||AppDatabase.getDBInstance(this).getItemsDAO().getMovieList().size()>0) {
+            getMenuInflater().inflate(R.menu.sort_menu_list, menu);
+            return true;
+        }
+        return false;
+
     }
 
     @Override
@@ -109,7 +101,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //fetching movie list from movieDB api
-    private void callMovieListApi() {
+    public void callMovieListApi(final ApiResponseListener callback) {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No network ofline Data showing", Toast.LENGTH_SHORT).show();
+            callback.onMovieListFetched(AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().getMovieList());
+            return;
+        }
+
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage("Loading ");
@@ -132,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                         AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().insertMovieInfo(listResponse.getItems());
 
                         progressDialog.dismiss();
+                        callback.onMovieListFetched(listResponse.getItems());
                         showToast("size = " + AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().getMovieList().size());
 
                     } else {
