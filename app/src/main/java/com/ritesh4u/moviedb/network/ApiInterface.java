@@ -7,10 +7,13 @@ import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 import static com.ritesh4u.moviedb.AppConstants.API_KEY;
 
-public interface ApiInterface  {
-    @GET("list/1?api_key=" + API_KEY + "&language=en-US")
-    Call<JsonObject> getMovieList();
+public interface ApiInterface {
+    @GET("list/{list_id}?api_key=" + API_KEY )
+    Call<JsonObject> getMovieList(@Path(value = "list_id", encoded = true) String list_id,
+                                  @Query(value = "language", encoded = true) String language);
 }
