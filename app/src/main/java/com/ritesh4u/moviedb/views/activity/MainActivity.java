@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     //1=none 2=by date 3=by rating
     public static int sortBy = 1;
     String title = "";
+    ImageView backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         title = getString(R.string.defaultTitle);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
+        backButton = findViewById(R.id.backButton);
         setSupportActionBar(toolbar);
         toolbarTitle = findViewById(R.id.toolbarTitleTextView);
         //toolbar.inflateMenu(R.menu.sort_menu_list);
@@ -173,11 +177,18 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragManager = getSupportFragmentManager();
                 if (fragManager.getBackStackEntryCount() == 0) {
                     setToolbarTitle(title);
+                    backButton.setVisibility(View.GONE);
+
                 } else {
                     setToolbarTitle(fragManager.getBackStackEntryAt(fragManager.getBackStackEntryCount() - 1).getName());
+                    backButton.setVisibility(View.VISIBLE);
                 }
 
             }
+        });
+        backButton.setOnClickListener(v -> {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+                getSupportFragmentManager().popBackStack();
         });
     }
 }
