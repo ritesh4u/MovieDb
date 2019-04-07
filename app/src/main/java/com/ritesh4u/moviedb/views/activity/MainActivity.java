@@ -4,15 +4,12 @@ import android.app.ProgressDialog;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,10 +18,12 @@ import com.google.gson.JsonObject;
 import com.ritesh4u.moviedb.R;
 import com.ritesh4u.moviedb.callback.ApiResponseListener;
 import com.ritesh4u.moviedb.database.AppDatabase;
+import com.ritesh4u.moviedb.models.Items;
 import com.ritesh4u.moviedb.network.ApiClient;
 import com.ritesh4u.moviedb.network.ApiInterface;
 import com.ritesh4u.moviedb.models.MovieListResponse;
 import com.ritesh4u.moviedb.views.fragment.MovieListFragment;
+import com.ritesh4u.moviedb.views.fragment.MovieDetailsFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,22 +40,25 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     //1=none 2=by date 3=by rating
     public static int sortBy = 1;
+    String title = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        title = getString(R.string.defaultTitle);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbarTitle = findViewById(R.id.toolbarTitleTextView);
         //toolbar.inflateMenu(R.menu.sort_menu_list);
         launchMovieListFragment(getString(R.string.defaultTitle));
+        setupBackstackListener();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (isNetworkAvailable() || AppDatabase.getDBInstance(this).getItemsDAO().getMovieList().size() > 0) {
-            
+
             getMenuInflater().inflate(R.menu.sort_menu_list, menu);
             return true;
         }
@@ -64,15 +66,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //launching moview list fragment
     private void launchMovieListFragment(@NonNull String title) {
         setToolbarTitle(title);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new MovieListFragment()).commitAllowingStateLoss();
     }
 
-    private void launchMovieDetailsFragment(@NonNull String title) {
-        setToolbarTitle(title);
-        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, new MovieListFragment())
-                .addToBackStack(title).commitAllowingStateLoss();
+    //launching movie details fragment
+    public void launchMovieDetailsFragment(@NonNull Items moviewDetails) {
+        setToolbarTitle(moviewDetails.getTitle());
+        getSupportFragmentManager().beginTransaction().add(R.id.content_frame, new MovieDetailsFragment().setMovieDetails(moviewDetails))
+                .addToBackStack(moviewDetails.getTitle()).commitAllowingStateLoss();
     }
 
     //Return true if network is available
@@ -116,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         //converting json response to POJO
                         MovieListResponse listResponse = new Gson().fromJson(response.body(), MovieListResponse.class);
                         setToolbarTitle(listResponse.getName());
+                        title = listResponse.getName();
                         //storing response in local database
                         AppDatabase.getDBInstance(getApplicationContext()).getItemsDAO().insertMovieInfo(listResponse.getItems());
 
@@ -159,5 +164,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return new Date();
+    }
+
+    private void setupBackstackListener() {
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                FragmentManager fragManager = getSupportFragmentManager();
+                if (fragManager.getBackStackEntryCount() == 0) {
+                    setToolbarTitle(title);
+                } else {
+                    setToolbarTitle(fragManager.getBackStackEntryAt(fragManager.getBackStackEntryCount() - 1).getName());
+                }
+
+            }
+        });
     }
 }

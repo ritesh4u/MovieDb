@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.ritesh4u.moviedb.R;
 import com.ritesh4u.moviedb.models.Items;
+import com.ritesh4u.moviedb.views.activity.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import static com.ritesh4u.moviedb.AppConstants.BASE_IMAGE_URL;
-import static com.ritesh4u.moviedb.AppConstants.SORT_BY_NONE;
 
 public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.ViewHolder> {
 
@@ -40,11 +40,12 @@ public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Items currentItem = movieList.get(i);
+        final Items currentItem = movieList.get(i);
         Picasso.get().load(BASE_IMAGE_URL + currentItem.getPoster_path()).into(viewHolder.movieImage);
         viewHolder.movieName.setText(currentItem.getTitle());
         viewHolder.moviePopularity.setText(currentItem.getVote_average());
         viewHolder.releaseDate.setText(currentItem.getRelease_date());
+        viewHolder.itemView.setOnClickListener(v->((MainActivity)mContext).launchMovieDetailsFragment(currentItem));
     }
 
     @Override
