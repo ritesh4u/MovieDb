@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import static com.ritesh4u.moviedb.AppConstants.BASE_IMAGE_URL;
-import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE;
 import static com.ritesh4u.moviedb.AppConstants.SORT_BY_NONE;
-import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING;
 
 public class MovieListadapter extends RecyclerView.Adapter<MovieListadapter.ViewHolder> {
 

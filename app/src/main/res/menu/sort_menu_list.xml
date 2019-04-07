@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:id="@+id/sort_menu_list" android:checkableBehavior="single">
-    <item android:id="@+id/sort_by_none"
-        app:showAsAction="never"
-        android:enabled="true"
-        android:checked="true"
-        android:title="none"/>
-    <item android:id="@+id/sort_by_date"
-        android:enabled="true"
-        app:showAsAction="never"
-        android:title="By Date "/>
-    <item android:id="@+id/sort_by_rating"
-        app:showAsAction="never"
-        android:enabled="true"
-        android:title="By Rating "/>
+    <group
+        android:id="@+id/sort_menu_list"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/sort_by_none"
+            android:checked="true"
+            android:enabled="true"
+            android:title="none"
+            app:showAsAction="withText" />
+        <item
+            android:id="@+id/sort_by_date_older"
+            android:enabled="true"
+            android:title="By Date(older) "
+            app:showAsAction="withText" />
+        <item
+            android:id="@+id/sort_by_date_latest"
+            android:enabled="true"
+            android:title="By Date(latest) "
+            app:showAsAction="withText" />
+        <item
+            android:id="@+id/sort_by_rating_low"
+            android:enabled="true"
+            android:title="By Rating(low) "
+            app:showAsAction="withText" />
+        <item
+            android:id="@+id/sort_by_rating_high"
+            android:enabled="true"
+            android:title="By Rating(high) "
+            app:showAsAction="withText" />
     </group>
 </menu>

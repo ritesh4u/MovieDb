@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE_LATEST;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_DATE_OLDER;
 import static com.ritesh4u.moviedb.AppConstants.SORT_BY_NONE;
-import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING_HIGH;
+import static com.ritesh4u.moviedb.AppConstants.SORT_BY_RATING_LOW;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,14 +91,25 @@ public class MovieListFragment extends Fragment implements ApiResponseListener {
                 movieListadapter.sortList();
                 return true;
 
-            case R.id.sort_by_date:
+            case R.id.sort_by_date_older:
                 ((MainActivity) Objects.requireNonNull(getContext())).showToast("by date");
-                MainActivity.sortBy = SORT_BY_DATE;
+                MainActivity.sortBy = SORT_BY_DATE_OLDER;
                 movieListadapter.sortList();
                 return true;
-            case R.id.sort_by_rating:
+
+            case R.id.sort_by_date_latest:
+                ((MainActivity) Objects.requireNonNull(getContext())).showToast("by date");
+                MainActivity.sortBy = SORT_BY_DATE_LATEST;
+                movieListadapter.sortList();
+                return true;
+            case R.id.sort_by_rating_low:
                 ((MainActivity) Objects.requireNonNull(getContext())).showToast("by rating");
-                MainActivity.sortBy = SORT_BY_RATING;
+                MainActivity.sortBy = SORT_BY_RATING_LOW;
+                movieListadapter.sortList();
+                return true;
+            case R.id.sort_by_rating_high:
+                ((MainActivity) Objects.requireNonNull(getContext())).showToast("by rating");
+                MainActivity.sortBy = SORT_BY_RATING_HIGH;
                 movieListadapter.sortList();
                 return true;
         }

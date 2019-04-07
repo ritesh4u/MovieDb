@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (isNetworkAvailable() || AppDatabase.getDBInstance(this).getItemsDAO().getMovieList().size() > 0) {
+            
             getMenuInflater().inflate(R.menu.sort_menu_list, menu);
             return true;
         }
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setMessage("Loading ");
+        progressDialog.setCancelable(false);
         Retrofit client = ApiClient.getClient();
 
         progressDialog.show();
